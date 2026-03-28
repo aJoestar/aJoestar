@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Héritage des 5/2</title>
+    <link rel="icon" type="image/png" href="img/Armoiries_de_Toulon.png">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        /* Gère l'image de fond */
+        body {
+            background-image: url('img/ancre-removebg-preview.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: contain;
+        }
+
+        /* Gère la boîte blanche pour le contenu */
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Gère la transition "douce" et le décalage pour la navbar */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px;
+        }
+
+        /* Panneau 1 : Page de garde */
+        #presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #333;
+            background-color: #ffffff;
+        }
+
+        #presentation .container-fluid {
+            padding-top: 70px;
+            padding-bottom: 70px;
+        }
+
+        #presentation img {
+            max-width: 80%;
+            height: auto;
+        }
+        
+        .text-shadow-sm {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        #presentation h1 {
+            font-size: 3.5rem;
+        }
+
+        /* Flèche de scroll animée */
+        .scroll-down-link {
+            position: absolute; 
+            bottom: 30px; 
+            color: #333; 
+            animation: bounce 2s infinite; 
+            text-decoration: none; 
+        }
+
+        .scroll-down-link:hover { color: #0056b3; }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        /* Style pour les catégories YouTube */
+        .category-divider {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 2rem;
+            margin-top: 3rem;
+        }
+
+        /* --- MODE SOMBRE --- */
+        [data-bs-theme="dark"] #presentation {
+            background-color: #1a1a1a; 
+            color: #eee;
+        }
+        [data-bs-theme="dark"] #presentation h1,
+        [data-bs-theme="dark"] #presentation h2,
+        [data-bs-theme="dark"] #presentation .lead,
+        [data-bs-theme="dark"] .scroll-down-link {
+            color: #eee !important;
+        }
+        [data-bs-theme="dark"] .container {
+            background-color: rgba(20, 20, 20, 0.95);
+        }
+
+        /* --- OPTIMISATIONS MOBILES --- */
+        @media (max-width: 768px) {
+            #presentation .text-md-start { text-align: center !important; }
+            .display-1 { font-size: 3.5rem; }
+            .display-3 { font-size: 2.5rem; }
+            .display-4 { font-size: 2rem; }
+            
+            /* C'EST ICI QUE J'AI FAIT LE CHANGEMENT : 100px au lieu de 20px */
+            #presentation .container-fluid { 
+                padding-top: 100px; 
+                padding-bottom: 40px; 
+            }
+            
+            #presentation img { max-width: 60%; }
+            p.lead { font-size: 1.1rem; }
+        }
+        /* --- TEXTE DÉROULANT SUR MOBILE --- */
+        @media (max-width: 768px) {
+            /* L'état "fermé" par défaut */
+            .mobile-collapse {
+                max-height: 120px; /* Hauteur visible avant clic */
+                overflow: hidden;
+                position: relative;
+                transition: max-height 0.5s ease-out; /* Animation fluide */
+            }
+
+            /* Le masque dégradé (effet de disparition) */
+            .mobile-collapse::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 60px;
+                /* Dégradé du transparent vers le BLANC (pour le mode clair) */
+                background: linear-gradient(to bottom, transparent, #ffffff);
+                pointer-events: none; /* Permet de cliquer à travers si besoin */
+                transition: opacity 0.3s;
+            }
+
+            /* L'état "ouvert" (quand on a cliqué) */
+            .mobile-collapse.expanded {
+                max-height: 1000px; /* On met une hauteur max immense pour tout montrer */
+            }
+            
+            /* On cache le dégradé quand c'est ouvert */
+            .mobile-collapse.expanded::after {
+                opacity: 0;
+            }
+        }
+
+        /* AJUSTEMENT POUR LE MODE SOMBRE */
+        /* On change la couleur du dégradé en GRIS FONCÉ si le mode sombre est actif */
+        [data-bs-theme="dark"] .mobile-collapse::after {
+            background: linear-gradient(to bottom, transparent, #1a1a1a);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#presentation">
+            <img src="img/Armoiries_de_Toulon.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+            Héritage des 5/2
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Accueil</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="documents.html">Documents</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="youtube.html">Chaînes YouTube</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="sites.html">Sites Utiles</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="projet.html">Le Projet</a>
+            </li>
+            
+            <li class="nav-item ms-lg-2">
+              <a class="nav-link" href="#" id="theme-toggle">
+                <i class="bi bi-sun-fill" id="theme-icon-sun"></i> 
+                <i class="bi bi-moon-stars-fill d-none" id="theme-icon-moon"></i> 
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container my-3 my-md-5" id="sites">
+        <header class="text-center mb-5">
+            <h1 class="display-4">Sites Utiles</h1>
+        </header>
+        <main>
+            <div class="list-group shadow-sm">
+              <a href="https://www.wolframalpha.com/" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">WolframAlpha</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+              <a href="https://www.geogebra.org/" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">GeoGebra</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+              <a href="https://www.doc-solus.fr/" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">DocSolus</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+              <a href="http://www.seigne.free.fr/" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">Mp* Physique Clémenceau</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+              <a href="https://www.bibmath.net/" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">Bibmath</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+              <a href="http://ddmaths.free.fr/" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">DDMaths</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+              <a href="https://www.iamateacher.org/" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">Elamiri Ahmed (iamateacher.org)</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+              <a href="https://cpgedupuydelome.fr/spip.php?page=exercices" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">CPGE Dupuy de Lome (Physique)</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+              <a href="https://www.xif.fr/public/pr%C3%A9pas-dupuy-de-l%C3%B4me-maths/" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">CPGE Dupuy de Lome (Maths)</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+              <a href="http://michel.quercia.free.fr/" class="list-group-item list-group-item-action" target="_blank">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">Michel Quercia</h5>
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </div>
+              </a>
+            </div>
+        </main>
+    </div>
+    <footer class="container my-5 text-center text-muted">
+        <p>© 2025 - Dumont d'Urville</p>
+        
+        <div class="mt-3">
+            <p class="mb-1">
+                <a href="https://lgarcin.github.io/" target="_blank">
+                    Site de M. Garcin 
+                    <i class="bi bi-box-arrow-up-right ms-1"></i>
+                </a>
+            </p>
+            <p class="mb-1">
+                <a href="https://cahier-de-prepa.fr/mp-toulon/" target="_blank">
+                    Cahier de Prépa (MP Dumont)
+                    <i class="bi bi-box-arrow-up-right ms-1"></i>
+                </a>
+            </p>
+            <p class="mb-1">
+                <a href="https://github.com/5demi-dumont/Dumont-au-sommet" target="_blank">
+                    Code source du site (GitHub)
+                    <i class="bi bi-github ms-1"></i>
+                </a>
+            </p>
+            <p class="mb-1">
+                Pour nous contacter (mail): 
+                <a href="mailto:heritage52.dumont@proton.me">heritage52.dumont@proton.me</a>
+            </p>     
+        </div>
+        
+        <p class="mt-4">
+            <a href="#presentation">Retour à l'accueil</a>
+        </p>
+            
+           
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // --- SCRIPT POUR LE DARK MODE ---
+        const toggleButton = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('theme-icon-sun');
+        const moonIcon = document.getElementById('theme-icon-moon');
+        const htmlElement = document.documentElement;
+
+        function applyTheme(theme) {
+            htmlElement.setAttribute('data-bs-theme', theme);
+            if (theme === 'dark') {
+                sunIcon.classList.add('d-none');
+                moonIcon.classList.remove('d-none');
+            } else {
+                sunIcon.classList.remove('d-none');
+                moonIcon.classList.add('d-none');
+            }
+        }
+
+        toggleButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const currentTheme = htmlElement.getAttribute('data-bs-theme');
+            const newTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else if (prefersDark) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        }
+        loadTheme();
+    </script>
+
+    <script>
+        // --- SCRIPT POUR LA DATE DE MAJ GITHUB ---
+        const USERNAME = '5demi-dumont';   
+        const REPO_NAME = 'Dumont-au-sommet'; 
+        
+        document.querySelectorAll('.last-updated').forEach(async (element) => {
+            const filePath = element.getAttribute('data-file');
+            const apiUrl = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/commits?path=${filePath}&page=1&per_page=1`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    const dateString = data[0].commit.committer.date;
+                    const date = new Date(dateString);
+                    const formattedDate = date.toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                    element.innerHTML = `<i class="bi bi-clock-history me-1"></i> MàJ : ${formattedDate}`;
+                } else {
+                    element.innerHTML = ""; 
+                }
+            } catch (error) {
+                console.error("Erreur récupération date:", error);
+                element.innerHTML = ""; 
+            }
+        });
+        
+    </script>
+    <script>
+        // --- SCRIPT POUR LE TEXTE DÉROULANT SUR MOBILE ---
+        const readMoreBtn = document.getElementById('btn-read-more');
+        const introText = document.getElementById('intro-text');
+
+        if(readMoreBtn && introText) {
+            readMoreBtn.addEventListener('click', () => {
+                // On ajoute/enlève la classe qui agrandit le texte
+                introText.classList.toggle('expanded');
+                
+                // On change le texte du bouton
+                if (introText.classList.contains('expanded')) {
+                    readMoreBtn.innerHTML = 'Réduire <i class="bi bi-chevron-up"></i>';
+                } else {
+                    readMoreBtn.innerHTML = 'Lire la suite <i class="bi bi-chevron-down"></i>';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
